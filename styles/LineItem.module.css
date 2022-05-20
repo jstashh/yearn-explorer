@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  /* justify-content: s pace-between; */
+  align-items: center;
+  padding: 8px 0;
+}
+
+.title {
+  width: 200px;
+  color: grey;
+}
+
+.explorerLink,
+.value {
+  font-size: larger;
+  width: 200px;
+  color: inherit;
+  /* color: white; */
+}
+
+.explorerLink {
+  /* width: none; */
+  /* max-width: 200px; */
+}
+
+.address:hover {
+  text-decoration: underline;
+}

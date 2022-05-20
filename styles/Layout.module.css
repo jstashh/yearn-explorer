@@ -1,0 +1,32 @@
+.footer {
+  height: 5vh;
+  display: flex;
+  flex: 1;
+  padding: 2rem 0;
+  border-top: 1px solid #eaeaea;
+  justify-content: center;
+  align-items: center;
+  /* height: 250px; */
+}
+
+.footer a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.main {
+  /* height: 83vh; */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  align-items: center;
+  padding-top: 0;
+  /* text-overflow: ; */
+}
+
+.container {
+  padding: 0;
+}

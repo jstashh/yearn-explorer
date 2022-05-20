@@ -1,0 +1,16 @@
+.header {
+  background-color: rgb(6, 87, 249);
+  padding: 0 10%;
+  min-height: 10vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  color: white;
+}
+
+.link {
+  color: white;
+}

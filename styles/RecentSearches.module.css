@@ -1,0 +1,11 @@
+.recentContainer {
+  max-height: 60vh;
+  overflow: scroll;
+  max-width: 470px;
+  width: 50vw;
+}
+
+.header {
+  margin-bottom: 0;
+  margin-top: 3rem;
+}

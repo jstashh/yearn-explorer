@@ -1,0 +1,41 @@
+.container {
+  display: flex;
+  /* background-color: red; */
+  width: 100%;
+  padding: 0 10%;
+  justify-content: space-between;
+  gap: 5%;
+}
+
+@media screen and (max-width: 900px) {
+  .container {
+    flex-direction: column;
+  }
+}
+
+.vaultInfoContainer {
+  /* background-color: blue; */
+  width: 100%;
+  /* margin: 0 10%; */
+  /* margin-left: 10%; */
+  /* margin-right: -10%; */
+}
+
+.strategyInfoContainer {
+  /* background-color: green; */
+  width: 100%;
+}
+
+.header {
+  margin-top: 2rem;
+  width: 100%;
+  border-bottom: solid lightgray;
+  border-width: 1px;
+  margin-bottom: 1rem;
+}
+
+.zeroDebtButton {
+  /* width: 100px;
+  height: 50px;
+  color: red; */
+}
