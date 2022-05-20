@@ -31,12 +31,6 @@ const formatDate = (date) => {
   const then = date.setHours(0, 0, 0, 0);
   const days = (then - now) / 86400000;
   if (days > -6) {
-    // if (days > -1) {
-    //   return "Today";
-    // }
-    // if (days > -2)  {
-    //   return "Yesterday"
-    // }
     if (days > -2) {
       return relative.format(days, "day");
     }
@@ -51,7 +45,7 @@ function formatFee(fee) {
 
 function formatBigNumber(number, symbol) {
   const formatted = ethers.utils.formatUnits(number, 18);
-  const fixed = (+formatted.toString()).toFixed(4);
+  const fixed = (+formatted.toString()).toFixed(2);
   var result = ethers.utils.commify(fixed);
   if (symbol) {
     result = result + " " + symbol;
@@ -157,26 +151,41 @@ export default function VaultView() {
         return;
       }
 
-      const helper = new Contract(
-        "0x9d032763693D4eF989b630de2eCA8750BDe88219",
-        strategiesHelperAbi,
-        store.provider
-      );
-
       const aggregator = new Contract(
-        "0x4c87E89c1215f92e9F48c1Ae2201351ce7170f01",
+        "0x383588dd317a7189522b8646b729b4b87794ccd1",
         vaultStrategiesParamAggregatorAbi,
         store.provider
       );
 
       const stratData = await aggregator.assetVaultStrategiesInfo(vaultAddress);
-      var arrayToSort = [...stratData];
+
+      const stratDataDecoded = stratData.map((datum) => {
+        const paramsStruct = datum[4];
+        const params = {
+          performanceFee: paramsStruct[0],
+          activation: paramsStruct[1],
+          debtRatio: paramsStruct[2],
+          minDebtPerHarvest: paramsStruct[3],
+          maxDebtPerHarvest: paramsStruct[4],
+          lastReport: paramsStruct[5],
+          totalDebt: paramsStruct[6],
+          totalGain: paramsStruct[7],
+          totalLoss: paramsStruct[8],
+        };
+        return {
+          address: datum[0],
+          name: datum[1],
+          underlyingTokenSymbol: datum[2],
+          realDebtRatio: datum[3],
+          params,
+        };
+      });
+      var arrayToSort = [...stratDataDecoded];
       arrayToSort.sort(function (lhs, rhs) {
-        const lhsNum = +lhs[2][2].toString();
-        const rhsNum = +rhs[2][2].toString();
+        const lhsNum = +lhs.params.debtRatio.toString();
+        const rhsNum = +rhs.params.debtRatio.toString();
         return rhsNum - lhsNum;
       });
-      console.log(arrayToSort.map((el) => el[2][2].toString()));
 
       setStrategiesData(arrayToSort);
     }
@@ -234,28 +243,38 @@ export default function VaultView() {
           {showZeroDebtRatio ? "Hide" : "Show"} zero debt ratio
         </button>
         {strategiesData.map((datum) => {
-          if (!showZeroDebtRatio && datum[2][2].toString() === "0") {
+          if (!showZeroDebtRatio && datum.realDebtRatio.toString() === "0") {
             return <></>;
           }
           return (
             <>
-              <h4 className={styles.header}>{datum[1]}</h4>
+              <h4 className={styles.header}>{datum.name}</h4>
               <AddressLineItem myTitle={"Address"} address={datum[0]} />
               <LineItem
                 myTitle={"Debt Ratio"}
-                myValue={(datum[2][2] / 10000).toString()}
+                myValue={(datum.params.debtRatio / 10000).toString()}
+              />
+              <LineItem
+                myTitle={"Real Debt Ratio"}
+                myValue={(datum.realDebtRatio / 10000).toString()}
               />
               <LineItem
                 myTitle={"Last Report"}
-                myValue={formatTimestamp(datum[2][5])}
+                myValue={formatTimestamp(datum.params.lastReport)}
               />
               <LineItem
                 myTitle={"Total Debt"}
-                myValue={formatBigNumber(datum[2][6], "")}
+                myValue={formatBigNumber(
+                  datum.params.totalDebt,
+                  datum.underlyingTokenSymbol
+                )}
               />
               <LineItem
                 myTitle={"Total Gain"}
-                myValue={formatBigNumber(datum[2][7], "")}
+                myValue={formatBigNumber(
+                  datum.params.totalGain,
+                  datum.underlyingTokenSymbol
+                )}
               />
               {/* <VaultStrategyInfo
                 key={datum[0]}

@@ -31,6 +31,12 @@
             "type": "address"
           },
           { "internalType": "string", "name": "name", "type": "string" },
+          { "internalType": "string", "name": "vaultSymbol", "type": "string" },
+          {
+            "internalType": "uint256",
+            "name": "realDebtRatio",
+            "type": "uint256"
+          },
           {
             "components": [
               {
