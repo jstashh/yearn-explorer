@@ -27,10 +27,16 @@ const long = new Intl.DateTimeFormat("en-GB", {
 });
 
 const formatDate = (date) => {
-  const now = new Date();
-  const then = date;
+  const now = new Date().setHours(0, 0, 0, 0);
+  const then = date.setHours(0, 0, 0, 0);
   const days = (then - now) / 86400000;
   if (days > -6) {
+    // if (days > -1) {
+    //   return "Today";
+    // }
+    // if (days > -2)  {
+    //   return "Yesterday"
+    // }
     if (days > -2) {
       return relative.format(days, "day");
     }
@@ -225,19 +231,39 @@ export default function VaultView() {
           className={styles.zeroDebtButton}
           onClick={toggleShowZeroDebt}
         >
-          {showZeroDebtRatio ? "Show" : "Hide"} zero debt ratio
+          {showZeroDebtRatio ? "Hide" : "Show"} zero debt ratio
         </button>
         {strategiesData.map((datum) => {
-          if (showZeroDebtRatio && datum[2][2].toString() === "0") {
+          if (!showZeroDebtRatio && datum[2][2].toString() === "0") {
             return <></>;
           }
           return (
-            <VaultStrategyInfo
-              key={datum[0]}
-              address={datum[0]}
-              name={datum[1]}
-              params={datum[2]}
-            />
+            <>
+              <h4 className={styles.header}>{datum[1]}</h4>
+              <AddressLineItem myTitle={"Address"} address={datum[0]} />
+              <LineItem
+                myTitle={"Debt Ratio"}
+                myValue={(datum[2][2] / 10000).toString()}
+              />
+              <LineItem
+                myTitle={"Last Report"}
+                myValue={formatTimestamp(datum[2][5])}
+              />
+              <LineItem
+                myTitle={"Total Debt"}
+                myValue={formatBigNumber(datum[2][6], "")}
+              />
+              <LineItem
+                myTitle={"Total Gain"}
+                myValue={formatBigNumber(datum[2][7], "")}
+              />
+              {/* <VaultStrategyInfo
+                key={datum[0]}
+                address={datum[0]}
+                name={datum[1]}
+                params={datum[2]}
+              /> */}
+            </>
           );
         })}
       </div>
